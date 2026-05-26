@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-soft
+  namespace: default
+spec:
+  replicas: 3 # Zwiększamy do 3, żeby lepiej zobaczyć efekt
+  selector:
+    matchLabels:
+      app: frontend-preferred
+  template:
+    metadata:
+      labels:
+        app: frontend-preferred
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution: # Reguła miękka (Soft rule)
+          - weight: 100 # Najwyższy priorytet dla tej reguły
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - frontend-preferred
+              topologyKey: "topology.kubernetes.io/zone"
+      containers:
+      - name: web
+        image: nginx:alpine

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scalable-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-scale
+  template:
+    metadata:
+      labels:
+        app: web-scale
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        resources:
+          requests:
+            cpu: "100m" # Nasza baza do obliczeń HPA (100m = 100% dla HPA)
+            memory: "50Mi"
+          limits:
+            cpu: "200m"
+            memory: "100Mi"
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: scalable-app-hpa
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: scalable-app
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50 # Chcemy skalować powyżej 50% z requests (czyli > 50m)

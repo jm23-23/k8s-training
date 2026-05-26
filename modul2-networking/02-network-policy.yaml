@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-allow-only-backend
+  namespace: backend-ns
+spec:
+  podSelector:
+    matchLabels:
+      app: database
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: backend-ns
+      podSelector:
+        matchLabels:
+          app: backend
+    ports:
+    - protocol: TCP
+      port: 6379

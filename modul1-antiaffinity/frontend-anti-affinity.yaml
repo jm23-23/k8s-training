@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-ha
+  namespace: default
+spec:
+  replicas: 2 # Chcemy 2 pody
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution: # To jest reguła twarda (Hard rule)
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - frontend
+            topologyKey: "topology.kubernetes.io/zone" # Nie chcemy dwóch takich podów w tej samej strefie
+      containers:
+      - name: web
+        image: nginx:alpine
