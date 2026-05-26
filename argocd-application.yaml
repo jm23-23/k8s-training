@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitops-scalable-app
+  namespace: argocd # Sama definicja aplikacji GitOps żyje w namespace argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/jm23-23/k8s-training.git' # URL do Twojego repo
+    targetRevision: HEAD # Chcemy zawsze najnowszy commit z głównej gałęzi
+    path: modul3-resources # Ścieżka do katalogu z manifestami w repozytorium
+  destination:
+    server: 'https://kubernetes.default.svc' # Docelowy klaster (czyli ten, w którym żyje ArgoCD)
+    namespace: default # Do jakiego namespace wrzucić te aplikacje
+  syncPolicy:
+    automated:
+      prune: true # Jeśli usuniesz plik z Gita, ArgoCD usunie go też z klastra
+      selfHeal: true # Jeśli ktoś ręcznie zmieni coś za pomocą kubectl, ArgoCD to nadpisze stanem z Gita!
