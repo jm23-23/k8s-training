@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout # 👈 Uwaga! Zamiast Deployment używamy nowego typu obiektu
+metadata:
+  name: canary-demo
+  namespace: default
+spec:
+  replicas: 5 # Chcemy 5 podów, żeby łatwo wydzielić 20% (1 pod)
+  strategy:
+    canary: # Definiujemy strategię kanarkową
+      steps:
+      - setWeight: 20 # Krok 1: Przekieruj 20% ruchu do nowej wersji (1 z 5 podów)
+      - pause: {}     # Krok 2: Zatrzymaj wdrożenie w nieskończoność i czekaj na decyzję inżyniera
+      - setWeight: 60 # Krok 3: Po zatwierdzeniu podbij do 60% ruchu
+      - pause: { duration: 10s } # Krok 4: Poczekaj automatycznie 10 sekund i sprawdź czy stabilne
+  selector:
+    matchLabels:
+      app: canary-demo
+  template:
+    metadata:
+      labels:
+        app: canary-demo
+    spec:
+      containers:
+      - name: web
+        image: argoproj/rollouts-demo:blue # Wersja v1 (niebieska wizualnie)
+        ports:
+        - containerPort: 8080
