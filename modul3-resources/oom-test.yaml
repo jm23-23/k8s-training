@@ -19,7 +19,7 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: scalable-app-hpa
+  name: oom-target-hpa
   namespace: default
 spec:
   scaleTargetRef:
