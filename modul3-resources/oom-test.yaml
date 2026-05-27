@@ -25,7 +25,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: scalable-app1
+    name: oom-target-pod
   minReplicas: 1
   maxReplicas: 5
   metrics:
