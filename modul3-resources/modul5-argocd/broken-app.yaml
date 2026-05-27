@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fragile-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fragile
+  template:
+    metadata:
+      labels:
+        app: fragile
+    spec:
+      containers:
+      - name: web
+        image: nginx:invalid-tag-2026 # ⚠️ Błędny tag obrazu - wywoła ImagePullBackOff
+        ports:
+        - containerPort: 80
