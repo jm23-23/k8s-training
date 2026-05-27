@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: web
-        image: nginx:invalid-tag-2026 # ⚠️ Błędny tag obrazu - wywoła ImagePullBackOff
+        image: nginx:apline # ⚠️ Błędny tag obrazu - wywoła ImagePullBackOff
         ports:
         - containerPort: 80
