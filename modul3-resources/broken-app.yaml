@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: web
-        image: nginx:apline # ⚠️ Błędny tag obrazu - wywoła ImagePullBackOff
+        image: nginx:1.31.1-alpine-slim # ⚠️ Błędny tag obrazu - wywoła ImagePullBackOff
         ports:
         - containerPort: 80
